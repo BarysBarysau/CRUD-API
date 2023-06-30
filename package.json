@@ -3,8 +3,11 @@
   "version": "1.0.0",
   "description": "Create a simple CRUD API",
   "main": "main.js",
+  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node ./src",
+    "dev": "nodemon --ignore **/*.json ./src/index.js"
   },
   "repository": {
     "type": "git",
