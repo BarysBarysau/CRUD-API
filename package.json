@@ -2,12 +2,12 @@
   "name": "crud-api",
   "version": "1.0.0",
   "description": "Create a simple CRUD API",
-  "main": "main.js",
+  "main": "index.js",
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start:prod": "node ./src",
-    "start:dev": "nodemon --ignore **/*.json ./src/index.js"
+    "start:dev": "SET NODE_ENV=development && nodemon --ignore **/*.json ./src/index.js"
   },
   "repository": {
     "type": "git",

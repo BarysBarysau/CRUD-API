@@ -17,9 +17,4 @@ class Users {
   }
 }
 
-const user = new Users("Yan", 4, ["football", "ice-cream", "puri"]);
-const user2 = new Users("Vi", 8, ["football", "ice-cream", "puri"]);
-user.addUser();
-user2.addUser();
-
-console.log(Users.getUsers());
+export default Users;
