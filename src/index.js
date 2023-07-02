@@ -1,10 +1,11 @@
+import { UserPoster } from "./routes/users.js";
 import cluster from "node:cluster";
 import http from "node:http";
 import path from "node:path";
 import os from "node:os";
 import process from "node:process";
-import Users from "./service/UserService.js";
 import "dotenv/config";
+import Users from "./service/UserService.js";
 
 let PORT;
 process.env.NODE_ENV === "production"
@@ -34,22 +35,14 @@ if (cluster.isPrimary) {
 } */
 
 const server = http.createServer((request, response) => {
-  const chunks = [];
-  let stringData = "";
-  request.on("data", (chunk) => {
-    chunks.push(chunk);
-  });
-  request.on("end", () => {
-    const data = Buffer.concat(chunks);
-    stringData = data.toString();
-    const user = new Users(
-      JSON.parse(stringData).username,
-      JSON.parse(stringData).age,
-      JSON.parse(stringData).hobbies
-    );
-    user.addUser();
-    response.end(JSON.stringify(Users.getUsers()));
-  });
+  if (request.url === "/api/users") {
+    if (request.method === "POST") {
+      UserPoster(request, response);
+    }
+    if (request.method === "GET") {
+      response.end(JSON.stringify(Users.getUsers()));
+    }
+  }
 });
 
 server.listen(PORT);
