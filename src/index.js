@@ -1,10 +1,6 @@
-import { UserPoster } from "./routes/users.js";
-import { UsersGetter } from "./routes/users.js";
-import url from "node:url";
-import cluster from "node:cluster";
+import { UserPoster, UsersGetter } from "./routes/users.js";
+import { UserPutter, UserDelete } from "./routes/userId.js";
 import http from "node:http";
-import path from "node:path";
-import os from "node:os";
 import process from "node:process";
 import "dotenv/config";
 import Users from "./service/UserService.js";
@@ -52,7 +48,7 @@ const server = http.createServer((request, response) => {
           request.url.split("/").slice(1, 3).toString() === "api,users" &&
           request.url.split("/").pop() !== "users"
         ) {
-          const userId = request.url.split("/").pop().slice(3, -3);
+          const userId = request.url.split("/").pop();
           if (request.method === "PUT") {
             UserPutter();
           } else if (request.method === "GET") {
