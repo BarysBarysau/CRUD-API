@@ -1,4 +1,6 @@
 import { UserPoster } from "./routes/users.js";
+import { UsersGetter } from "./routes/users.js";
+import url from "node:url";
 import cluster from "node:cluster";
 import http from "node:http";
 import path from "node:path";
@@ -35,13 +37,47 @@ if (cluster.isPrimary) {
 } */
 
 const server = http.createServer((request, response) => {
-  if (request.url === "/api/users") {
-    if (request.method === "POST") {
-      UserPoster(request, response);
+  try {
+    switch (request.url) {
+      case "/api/users":
+      case "api/users":
+        if (request.method === "POST") {
+          UserPoster(request, response);
+        } else if (request.method === "GET") {
+          UsersGetter(request, response);
+        }
+        break;
+      default:
+        if (
+          request.url.split("/").slice(1, 3).toString() === "api,users" &&
+          request.url.split("/").pop() !== "users"
+        ) {
+          const userId = request.url.split("/").pop().slice(3, -3);
+          if (request.method === "PUT") {
+            UserPutter();
+          } else if (request.method === "GET") {
+            if (Users.getById(userId)) {
+              response.writeHead(200, { "Content-Type": "application/json" });
+              response.end(JSON.stringify(Users.getById(userId)));
+            } else {
+              response.writeHead(404, {
+                "Content-Type": "text/plain; charset=UTF-8",
+              });
+              response.end(`Sorry, user with userId=${userId} doesn't exist`);
+            }
+          } else if (request.method === "DELETE") {
+            UserDelete();
+          }
+        } else {
+          response.writeHead(404, {
+            "Content-Type": "text/plain; charset=UTF-8",
+          });
+          response.end("Sorry, resource not found");
+        }
     }
-    if (request.method === "GET") {
-      response.end(JSON.stringify(Users.getUsers()));
-    }
+  } catch (err) {
+    response.writeHead(500);
+    response.end("Sorry, some mistake occured");
   }
 });
 
